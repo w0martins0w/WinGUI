@@ -10,7 +10,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#if defined(UNICODE)
+#ifdef UNICODE
 	#ifndef TEXT
 		#define TEXT(quote) L##quote
 	#endif
@@ -47,22 +47,32 @@ extern "C" {
 	// ========================================
 	// Unicode Aware C String Fuctions
 
+	/// <summary>
+	///		Retrieve Unicode String Length
+	/// </summary>
 	/// <param name="string">Pointer to Unicode String</param>
-	/// <returns>String Length in Characters without L'\0'</returns>
-	_WIN_GUI_API_ size_t StrLenW(
+	/// <returns>
+	///		String Length in Characters without L'\0'
+	/// </returns>
+	_WIN_GUI_API_ size_t String_Length_U(
 		const wchar_t *string
 	);
 
+	/// <summary>
+	///		Retrieve ANSI String Length
+	/// </summary>
 	/// <param name="string">Pointer to ANSI String</param>
-	/// <returns>String Length in Characters without '\0'</returns>
-	_WIN_GUI_API_ size_t StrLenA(
+	/// <returns>
+	///		String Length in Characters without '\0'
+	/// </returns>
+	_WIN_GUI_API_ size_t String_Length_A(
 		const char *string
 	);
 
-	#if defined(UNICODE)
-		#define StrLen StrLenW
+	#ifdef UNICODE
+		#define String_Length String_Length_U
 	#else // ANSI
-		#define StrLen StrLenA
+		#define String_Length String_Length_A
 	#endif
 
 	// ========================================

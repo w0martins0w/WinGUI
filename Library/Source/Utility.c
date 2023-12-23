@@ -3,11 +3,10 @@
 // ========================================
 // Unicode Aware C String Fuctions
 
-
-_WIN_GUI_API_ size_t StrLenW(
+_WIN_GUI_API_ size_t String_Length_U(
 	const wchar_t *string
 ) {
-	
+
 	if (string == NULL) {
 		return 0;
 	}
@@ -21,10 +20,10 @@ _WIN_GUI_API_ size_t StrLenW(
 
 }
 
-_WIN_GUI_API_ size_t StrLenA(
+_WIN_GUI_API_ size_t String_Length_A(
 	const char *string
 ) {
-	
+
 	if (string == NULL) {
 		return 0;
 	}

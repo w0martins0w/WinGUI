@@ -254,14 +254,14 @@ LRESULT WndProc(
 
 				SIZE textExtent = { 0 };
 				GetTextExtentPoint(MemDC, userData->outputText,
-					(int)(StrLen(userData->outputText)), &textExtent);
+					(int)(String_Length(userData->outputText)), &textExtent);
 
 				TextOut(
 					MemDC,
 					(client.right - client.left) / 2 - textExtent.cx / 2,
 					(client.bottom - client.top) / 2 - textExtent.cy / 2,
 					userData->outputText,
-					(int)(StrLen(userData->outputText))
+					(int)(String_Length(userData->outputText))
 				);
 
 				SetBkMode(MemDC, prevBKMode);
