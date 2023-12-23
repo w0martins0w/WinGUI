@@ -29,7 +29,7 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="Resources\Resource.h">
-      <Filter>Source</Filter>
+      <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
