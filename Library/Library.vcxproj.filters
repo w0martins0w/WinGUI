@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>h;hpp;c;cpp;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resources">
+      <UniqueIdentifier>{be8ad9c2-e54a-4eba-8827-d3074491c33f}</UniqueIdentifier>
+      <Extensions>ico;cur;bmp;dlg;rc;rct;bin;gif;jpg;resx;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Graphics.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Utility.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SRNG.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Version.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\WinGUI.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources\Resource.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources\Resource.rc">
+      <Filter>Resources</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
