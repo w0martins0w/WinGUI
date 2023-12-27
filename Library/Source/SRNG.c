@@ -15,7 +15,7 @@ _WIN_GUI_API_ hRand Rand_Create(
 	Rand *self = (Rand*)(calloc(1, sizeof(Rand)));
 
 	if (self == NULL) {
-		return NULL;
+		return (hRand)(self);
 	}
 
 	uint32_t _2 = 0, _1 = seed % UINT32_MAX;

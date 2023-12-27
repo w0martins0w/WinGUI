@@ -3,7 +3,9 @@
 
 #include "WinGUI.h"
 
-_WIN_GUI_API_ _Bool WinGUI_GetVer(WinGUI_Ver *self) {
+_WIN_GUI_API_ _Bool WinGUI_GetVer(
+	WinGUI_Ver *self
+) {
 	
 	if (self == NULL) {
 		return 1;
@@ -17,8 +19,8 @@ _WIN_GUI_API_ _Bool WinGUI_GetVer(WinGUI_Ver *self) {
 		(LPCTSTR)(WinGUI_GetVer), &hModule
 	);
 
-	TCHAR ModuleName[MAX_PATH] = { 0 };
-	GetModuleFileName(hModule, ModuleName, MAX_PATH);
+	TCHAR ModuleName[MAX_PATH + 1] = { 0 };
+	GetModuleFileName(hModule, ModuleName, MAX_PATH + 1);
 
 	DWORD VSVerSize = GetFileVersionInfoSize(ModuleName, NULL);
 

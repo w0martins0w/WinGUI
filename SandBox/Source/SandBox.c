@@ -254,14 +254,21 @@ LRESULT WndProc(
 
 				SIZE textExtent = { 0 };
 				GetTextExtentPoint(MemDC, userData->outputText,
-					(int)(String_Length(userData->outputText)), &textExtent);
+					(int)(Str_Len(userData->outputText)), &textExtent);
+
+				TCHAR Test[25] = { 0 };
+				Str_Cpy(Test, 25, TEXT("Win32Api")); // -> "Win32Api"
+				Str_Cpy(Test, 0, TEXT("Win32Api"));  // -> unchanged
+				Str_Cpy(Test, 25, NULL);             // -> ""
+				Str_Cpy(NULL, 25, NULL);             // -> NULL
+				Str_Cpy(NULL, 0, NULL);              // -> NULL
 
 				TextOut(
 					MemDC,
 					(client.right - client.left) / 2 - textExtent.cx / 2,
 					(client.bottom - client.top) / 2 - textExtent.cy / 2,
 					userData->outputText,
-					(int)(String_Length(userData->outputText))
+					(int)(Str_Len(userData->outputText))
 				);
 
 				SetBkMode(MemDC, prevBKMode);

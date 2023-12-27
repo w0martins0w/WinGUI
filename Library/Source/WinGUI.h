@@ -29,6 +29,9 @@ extern "C" {
 	// ========================================
 	// Version
 
+	/// <summary>
+	///		WinGUI_Ver Structure
+	/// </summary>
 	typedef struct _WIN_GUI_VER_ {
 		uint32_t version; // Version Number
 		uint16_t major;   //   0xFFFF0000
@@ -42,7 +45,9 @@ extern "C" {
 	/// <returns>
 	///		TRUE: Success / FALSE: Failure
 	/// </returns>
-	_WIN_GUI_API_ _Bool WinGUI_GetVer(WinGUI_Ver *self);
+	_WIN_GUI_API_ _Bool WinGUI_GetVer(
+		WinGUI_Ver *self
+	);
 
 	// ========================================
 	// Unicode Aware C String Fuctions
@@ -50,29 +55,47 @@ extern "C" {
 	/// <summary>
 	///		Retrieve Unicode String Length
 	/// </summary>
-	/// <param name="string">Pointer to Unicode String</param>
+	/// <param name="str">Pointer to Unicode String</param>
 	/// <returns>
 	///		String Length in Characters without L'\0'
 	/// </returns>
-	_WIN_GUI_API_ size_t String_Length_U(
-		const wchar_t *string
+	_WIN_GUI_API_ size_t StrW_Len(
+		const wchar_t *str
 	);
 
 	/// <summary>
 	///		Retrieve ANSI String Length
 	/// </summary>
-	/// <param name="string">Pointer to ANSI String</param>
+	/// <param name="str">Pointer to ANSI String</param>
 	/// <returns>
 	///		String Length in Characters without '\0'
 	/// </returns>
-	_WIN_GUI_API_ size_t String_Length_A(
-		const char *string
+	_WIN_GUI_API_ size_t StrA_Len(
+		const char *str
 	);
 
 	#ifdef UNICODE
-		#define String_Length String_Length_U
+		#define Str_Len StrW_Len
 	#else // ANSI
-		#define String_Length String_Length_A
+		#define Str_Len StrA_Len
+	#endif
+
+	_WIN_GUI_API_ wchar_t *StrW_Cpy(
+		wchar_t *dest,
+		size_t dest_size,
+		const wchar_t *src
+	);
+
+	_WIN_GUI_API_ char *StrA_Cpy(
+		char *dest,
+		size_t dest_size,
+		const char *src
+	);
+
+	#ifdef UNICODE
+		#define Str_Cpy StrW_Cpy
+	#else // ANSI
+		#define Str_Cpy StrA_Cpy
 	#endif
 
 	// ========================================
