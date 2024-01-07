@@ -166,7 +166,7 @@
     <ClCompile Include="Source\Graphics.c" />
     <ClCompile Include="Source\Version.c" />
     <ClCompile Include="Source\SRNG.c" />
-    <ClCompile Include="Source\Utility.c" />
+    <ClCompile Include="Source\C-String.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resources\Resource.h" />

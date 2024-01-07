@@ -105,6 +105,58 @@ _WIN_GUI_API_ char *StrA_Cpy(
 
 }
 
+_WIN_GUI_API_ wchar_t *StrW_Cat(
+	wchar_t *dest,
+	size_t size,
+	const wchar_t *src
+) {
+
+	if (dest == NULL) {
+		return dest;
+	}
+
+	size_t i = 0;
+	while (i < size) {
+
+		if (dest[i] == L'\0') {
+			StrW_Cpy(dest + i, size - i, src);
+			return dest;
+		}
+
+		i++;
+
+	}
+
+	return dest;
+
+}
+
+_WIN_GUI_API_ char *StrA_Cat(
+	char *dest,
+	size_t size,
+	const char *src
+) {
+
+	if (dest == NULL) {
+		return dest;
+	}
+
+	size_t i = 0;
+	while (i < size) {
+
+		if (dest[i] == '\0') {
+			StrA_Cpy(dest + i, size - i, src);
+			return dest;
+		}
+
+		i++;
+
+	}
+
+	return dest;
+
+}
+
 _WIN_GUI_API_ StrW_i32toStr(
 	int32_t i32,
 	_Bool inUnsigned,
@@ -167,9 +219,3 @@ _WIN_GUI_API_ StrW_i32toStr(
 	}
 
 }
-
-// ========================================
-
-
-
-// ========================================

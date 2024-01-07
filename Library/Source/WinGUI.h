@@ -98,6 +98,24 @@ extern "C" {
 		#define Str_Cpy StrA_Cpy
 	#endif
 
+	_WIN_GUI_API_ wchar_t *StrW_Cat(
+		wchar_t *dest,
+		size_t size,
+		const wchar_t *src
+	);
+
+	_WIN_GUI_API_ char *StrA_Cat(
+		char *dest,
+		size_t size,
+		const char *src
+	);
+
+	#ifdef UNICODE
+		#define Str_Cat StrW_Cat
+	#else // ANSI
+		#define Str_Cat StrA_Cat
+	#endif
+
 	_WIN_GUI_API_ StrW_i32toStr(
 		int32_t i32,
 		_Bool inUnsigned,

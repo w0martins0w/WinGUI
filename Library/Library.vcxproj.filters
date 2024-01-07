@@ -14,7 +14,7 @@
     <ClCompile Include="Source\Graphics.c">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Utility.c">
+    <ClCompile Include="Source\C-String.c">
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\SRNG.c">

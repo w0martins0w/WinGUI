@@ -269,25 +269,24 @@ LRESULT WndProc(
 							continue;
 						}
 
-						Str_Cpy(outDrive, 156, drive + 4);
-						Str_Cpy(outDrive + Str_Len(outDrive),
-							156 - Str_Len(outDrive), TEXT(" (hd"));
+						Str_Cat(outDrive, 156, drive + 4);
+						Str_Cat(outDrive, 156, TEXT(" (hd"));
 						
 						Str_i32toStr(device.DeviceNumber, 1,
 							outDrive + Str_Len(outDrive), 156 - Str_Len(outDrive));
 
-						Str_Cpy(outDrive + Str_Len(outDrive),
-							156 - Str_Len(outDrive), TEXT(","));
+						Str_Cat(outDrive, 156, TEXT(","));
 
 						Str_i32toStr(device.PartitionNumber, 1,
 							outDrive + Str_Len(outDrive), 156 - Str_Len(outDrive));
 
-						Str_Cpy(outDrive + Str_Len(outDrive),
-							156 - Str_Len(outDrive), TEXT(")"));
+						Str_Cat(outDrive, 156, TEXT(")"));
 
 						CloseHandle(hDrive);
 						
 						SendMessage(userData->hDevCombo, CB_ADDSTRING, (WPARAM)(0), (LPARAM)(outDrive));
+
+						Str_Cpy(outDrive, 156, TEXT(""));
 
 					}
 
