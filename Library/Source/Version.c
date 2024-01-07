@@ -8,7 +8,7 @@ _WIN_GUI_API_ _Bool WinGUI_GetVer(
 ) {
 	
 	if (self == NULL) {
-		return 1;
+		return 0;
 	}
 
 	HMODULE hModule = NULL;
@@ -36,10 +36,10 @@ _WIN_GUI_API_ _Bool WinGUI_GetVer(
 	
 	GetFileVersionInfo(ModuleName, NULL, VSVerSize, VSVer);
 
-	UINT VSVerFixedSize = 0;
+	UINT unused = 0;
 	VS_FIXEDFILEINFO *VSVerFixed = NULL;
 	
-	VerQueryValue(VSVer, TEXT("\\"), &VSVerFixed, &VSVerFixedSize);
+	VerQueryValue(VSVer, TEXT("\\"), &VSVerFixed, &unused);
 
 	self->version =
 		VSVerFixed->dwProductVersionMS;

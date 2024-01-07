@@ -41,7 +41,7 @@ extern "C" {
 	/// <summary>
 	///		Retrieve "WinGUI" Version Number
 	/// </summary>
-	/// <param name="self">Pointer to "WinGUI_Ver" Struct</param>
+	/// <param name="self">Pointer to "WinGUI_Ver" Structure</param>
 	/// <returns>
 	///		TRUE: Success / FALSE: Failure
 	/// </returns>
@@ -82,13 +82,13 @@ extern "C" {
 
 	_WIN_GUI_API_ wchar_t *StrW_Cpy(
 		wchar_t *dest,
-		size_t dest_size,
+		size_t size,
 		const wchar_t *src
 	);
 
 	_WIN_GUI_API_ char *StrA_Cpy(
 		char *dest,
-		size_t dest_size,
+		size_t size,
 		const char *src
 	);
 
@@ -96,6 +96,26 @@ extern "C" {
 		#define Str_Cpy StrW_Cpy
 	#else // ANSI
 		#define Str_Cpy StrA_Cpy
+	#endif
+
+	_WIN_GUI_API_ StrW_i32toStr(
+		int32_t i32,
+		_Bool inUnsigned,
+		wchar_t *dest,
+		size_t size
+	);
+
+	_WIN_GUI_API_ StrA_i32toStr(
+		int32_t i32,
+		_Bool inUnsigned,
+		char *dest,
+		size_t size
+	);
+
+	#ifdef UNICODE
+		#define Str_i32toStr StrW_i32toStr
+	#else // ANSI
+		#define Str_i32toStr StrA_i32toStr
 	#endif
 
 	// ========================================

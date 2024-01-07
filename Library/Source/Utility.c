@@ -39,7 +39,7 @@ _WIN_GUI_API_ size_t StrA_Len(
 
 _WIN_GUI_API_ wchar_t *StrW_Cpy(
 	wchar_t *dest,
-	size_t dest_size,
+	size_t size,
 	const wchar_t *src
 ) {
 
@@ -47,32 +47,24 @@ _WIN_GUI_API_ wchar_t *StrW_Cpy(
 		return dest;
 	}
 	
-	if (dest_size != 0) {
+	const wchar_t *cpy_str =
+		(src == NULL) ? L"" : src;
 
-		size_t i = 0;
-		
-		if (src != NULL) {
+	size_t i = 0;
+	while (i < size) {
 
-			while (i < dest_size) {
+		dest[i] = cpy_str[i];
 
-				if (src[i] == L'\0') {
-					i++; break;
-				}
-
-				dest[i] = src[i];
-
-				i++;
-
-			}
-
-		} else {
-
-			i++;
-
+		if (cpy_str[i] == L'\0') {
+			break;
 		}
-		
+
+		i++;
+
+	}
+
+	if (size != 0 && i == size) {
 		dest[i - 1] = L'\0';
-		
 	}
 
 	return dest;
@@ -81,7 +73,7 @@ _WIN_GUI_API_ wchar_t *StrW_Cpy(
 
 _WIN_GUI_API_ char *StrA_Cpy(
 	char *dest,
-	size_t dest_size,
+	size_t size,
 	const char *src
 ) {
 
@@ -89,35 +81,90 @@ _WIN_GUI_API_ char *StrA_Cpy(
 		return dest;
 	}
 
-	if (dest_size != 0) {
+	const char *cpy_str =
+		(src == NULL) ? "" : src;
 
-		size_t i = 0;
+	size_t i = 0;
+	while (i < size) {
 
-		if (src != NULL) {
+		dest[i] = cpy_str[i];
 
-			while (i < dest_size) {
-
-				if (src[i] == '\0') {
-					i++; break;
-				}
-
-				dest[i] = src[i];
-
-				i++;
-
-			}
-
-		} else {
-
-			i++;
-
+		if (cpy_str[i] == '\0') {
+			break;
 		}
 
-		dest[i - 1] = '\0';
+		i++;
 
 	}
 
+	if (size != 0 && i == size) {
+		dest[i - 1] = '\0';
+	}
+
 	return dest;
+
+}
+
+_WIN_GUI_API_ StrW_i32toStr(
+	int32_t i32,
+	_Bool inUnsigned,
+	wchar_t *dest,
+	size_t size
+) {
+
+	if (dest == NULL) {
+		return /* void */;
+	}
+
+	// Assume "i32" is Unsigned
+	uint32_t number = i32;
+
+	if (!inUnsigned && i32 < 0) {
+		number = i32 * -1;
+	}
+
+	int8_t digits_i;
+	wchar_t digits[10];
+	for (digits_i = 9; digits_i >= 0; digits_i--) {
+		digits[digits_i] = (number % 10) + '0';
+		number /= 10;
+		if (digits[digits_i] == '0') {
+			break;
+		}
+	}
+
+	if (digits_i != 9) {
+		digits_i++;
+	}
+
+	size_t i = 0;
+	while (i < size) {
+
+		if (i != 0) {
+			if (digits_i == 10) {
+				i++;
+				break;
+			}
+		}
+
+		if (i == 0) {
+			if (!inUnsigned && i32 < 0) {
+				dest[i] = '-';
+				i++;
+				continue;
+			}
+		}
+		
+		dest[i] = digits[digits_i];
+
+		digits_i++;
+		i++;
+
+	}
+
+	if (size != 0) {
+		dest[i - 1] = L'\0';
+	}
 
 }
 

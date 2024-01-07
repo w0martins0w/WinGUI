@@ -130,10 +130,11 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)Library\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B "$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B</Command>
+      <Command>.\PostBuild.bat "$(SolutionDir)" "$(Platform)\$(Configuration)\" "$(ProjectName)\" "$(SolutionName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying $(SolutionName).dll . . .</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -167,10 +168,11 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)Library\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B "$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B</Command>
+      <Command>.\PostBuild.bat "$(SolutionDir)" "$(Platform)\$(Configuration)\" "$(ProjectName)\" "$(SolutionName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying $(SolutionName).dll . . .</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -193,10 +195,11 @@
       <NullTerminateStrings>true</NullTerminateStrings>
     </ResourceCompile>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)Library\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B "$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B</Command>
+      <Command>.\PostBuild.bat "$(SolutionDir)" "$(Platform)\$(Configuration)\" "$(ProjectName)\" "$(SolutionName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying $(SolutionName).dll . . .</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -230,10 +233,11 @@
       </Message>
     </CustomBuildStep>
     <PostBuildEvent>
-      <Command>copy /Y "$(SolutionDir)Library\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B "$(SolutionDir)$(ProjectName)\$(Platform)\$(Configuration)\Output\$(SolutionName).dll" /B</Command>
+      <Command>.\PostBuild.bat "$(SolutionDir)" "$(Platform)\$(Configuration)\" "$(ProjectName)\" "$(SolutionName)"</Command>
     </PostBuildEvent>
     <PostBuildEvent>
-      <Message>Copying $(SolutionName).dll . . .</Message>
+      <Message>
+      </Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -247,6 +251,11 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\App.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="PostBuild.bat">
+      <FileType>Script</FileType>
+    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

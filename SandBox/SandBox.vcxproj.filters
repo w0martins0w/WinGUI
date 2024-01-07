@@ -30,4 +30,7 @@
       <Filter>Resources</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="PostBuild.bat" />
+  </ItemGroup>
 </Project>
