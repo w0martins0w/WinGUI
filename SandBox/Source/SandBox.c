@@ -8,6 +8,8 @@
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <winioctl.h>
+#include <Dbt.h>
 
 #include "..\Resources\Resource.h"
 
@@ -31,8 +33,12 @@ typedef struct _Main_Window {
 	int initCY;
 	TCHAR *outputText;
 	HFONT main;
+	HFONT paragraph;
 	COLORREF textColor;
 	hRand random;
+	HDEVNOTIFY hDevNot;
+	HWND hDevCombo;
+	WinGUI_Ver WinGUIVer;
 	int exitCode;
 } Main_Window;
 
@@ -93,7 +99,7 @@ int WINAPI _WinMain(
 		(DWORD)(0),
 		wcex.lpszClassName,
 		TEXT("SandBox"),
-		WS_OVERLAPPEDWINDOW,
+		WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
 		screen.cx / 2 - initial.cx / 2,
 		screen.cy / 2 - initial.cy / 2,
 		initial.cx, initial.cy,
@@ -170,7 +176,45 @@ LRESULT WndProc(
 
 			userData->textColor = RGB(255, 255, 255);
 
+			HWND hComboBox = CreateWindowEx(NULL, TEXT("ComboBox"), TEXT(""),
+				WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST, 10, 10,
+				((LPCREATESTRUCT)(lParam))->cx / 4,
+				28, hwnd, (HMENU)(0x01), ((LPCREATESTRUCT)(lParam))->hInstance, NULL);
+
+			if (hComboBox == NULL) {
+				return -1;
+			}
+
+			HFONT hParagraph = CreateFont(24, 0, 0, 0, FW_NORMAL,
+				FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, OUT_DEFAULT_PRECIS,
+				ANTIALIASED_QUALITY, VARIABLE_PITCH, TEXT("Consolas"));
+
+			if (hParagraph == NULL) {
+				return -1;
+			}
+
+			userData->paragraph = hParagraph;
+
+			SendMessage(hComboBox, WM_SETFONT, (WPARAM)(userData->paragraph), (LPARAM)(1));
+
+			userData->hDevCombo = hComboBox;
+
+			if (!WinGUI_GetVer(&userData->WinGUIVer)) {
+				return -1;
+			}
+
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)(userData));
+
+			DEV_BROADCAST_VOLUME devFilter = { 0 };
+			devFilter.dbcv_size = sizeof(devFilter);
+			devFilter.dbcv_devicetype = DBT_DEVTYP_VOLUME;
+			devFilter.dbcv_unitmask = 0xFFFFFFFF;
+			devFilter.dbcv_flags = DBTF_MEDIA;
+
+			userData->hDevNot = RegisterDeviceNotification(hwnd, &devFilter, DEVICE_NOTIFY_WINDOW_HANDLE);
+			
+			SendMessage(hwnd, WM_DEVICECHANGE,
+				(WPARAM)(DBT_CONFIGCHANGED), (LPARAM)(0));
 
 			if (SetTimer(hwnd, 0xFF, 1000, NULL) == 0) {
 				return -1;
@@ -179,6 +223,86 @@ LRESULT WndProc(
 			PostMessage(hwnd, WM_TIMER, 0xFF, NULL);
 
 			return 0;
+		}
+		
+		case WM_DEVICECHANGE: {
+
+			Main_Window *userData =
+				(Main_Window*)(GetWindowLongPtr(hwnd, GWLP_USERDATA));
+
+			SendMessage(userData->hDevCombo, CB_RESETCONTENT,
+				(WPARAM)(0), (LPARAM)(0));
+
+			TCHAR drive[7];
+			Str_Cpy(drive, 7, TEXT("\\\\.\\C:"));
+
+			TCHAR outDrive[156] = { 0 };
+
+			DWORD drives = GetLogicalDrives();
+			for (size_t i = 2; i < sizeof(drives) * 8; i++) {
+				if ((drives & (0x00000001 << i)) != 0) {
+
+					HANDLE hDrive = CreateFile(
+						drive, NULL, 0,
+						NULL, OPEN_EXISTING,
+						NULL, NULL
+					);
+
+					if (hDrive != INVALID_HANDLE_VALUE) {
+
+						DWORD unused = 0;
+						STORAGE_DEVICE_NUMBER device = { 0 };
+
+						DeviceIoControl(
+							hDrive,
+							IOCTL_STORAGE_GET_DEVICE_NUMBER,
+							NULL, 0,
+							&device,
+							sizeof(device),
+							&unused,
+							NULL
+						);
+
+
+						if (device.DeviceType != FILE_DEVICE_DISK) {
+							drive[4]++;
+							continue;
+						}
+
+						Str_Cpy(outDrive, 156, drive + 4);
+						Str_Cpy(outDrive + Str_Len(outDrive),
+							156 - Str_Len(outDrive), TEXT(" (hd"));
+						
+						Str_i32toStr(device.DeviceNumber, 1,
+							outDrive + Str_Len(outDrive), 156 - Str_Len(outDrive));
+
+						Str_Cpy(outDrive + Str_Len(outDrive),
+							156 - Str_Len(outDrive), TEXT(","));
+
+						Str_i32toStr(device.PartitionNumber, 1,
+							outDrive + Str_Len(outDrive), 156 - Str_Len(outDrive));
+
+						Str_Cpy(outDrive + Str_Len(outDrive),
+							156 - Str_Len(outDrive), TEXT(")"));
+
+						CloseHandle(hDrive);
+						
+						SendMessage(userData->hDevCombo, CB_ADDSTRING, (WPARAM)(0), (LPARAM)(outDrive));
+
+					}
+
+				}
+
+				drive[4]++;
+
+			}
+
+			if (drives != 0) {
+				SendMessage(userData->hDevCombo, CB_SETCURSEL, (WPARAM)(0), (LPARAM)(NULL));
+			}
+
+			return 1;
+
 		}
 		
 		case WM_ERASEBKGND: {
@@ -245,7 +369,7 @@ LRESULT WndProc(
 			HGDIOBJ oldMemBitmap = SelectObject(MemDC, MemBitmap);
 
 			FillRect(MemDC, &client, GetStockObject(BLACK_BRUSH));
-			
+
 			if (userData->outputText != NULL) {
 
 				int prevBKMode = SetBkMode(MemDC, TRANSPARENT);
@@ -256,19 +380,35 @@ LRESULT WndProc(
 				GetTextExtentPoint(MemDC, userData->outputText,
 					(int)(Str_Len(userData->outputText)), &textExtent);
 
-				TCHAR Test[25] = { 0 };
-				Str_Cpy(Test, 25, TEXT("Win32Api")); // -> "Win32Api"
-				Str_Cpy(Test, 0, TEXT("Win32Api"));  // -> unchanged
-				Str_Cpy(Test, 25, NULL);             // -> ""
-				Str_Cpy(NULL, 25, NULL);             // -> NULL
-				Str_Cpy(NULL, 0, NULL);              // -> NULL
-
 				TextOut(
 					MemDC,
 					(client.right - client.left) / 2 - textExtent.cx / 2,
 					(client.bottom - client.top) / 2 - textExtent.cy / 2,
 					userData->outputText,
 					(int)(Str_Len(userData->outputText))
+				);
+
+				SelectObject(MemDC, userData->paragraph);
+
+				TCHAR version[41] = { 0 };
+
+				Str_Cpy(version, 41, TEXT("WinGUI: "));
+				Str_i32toStr(userData->WinGUIVer.major, 1,
+					version + Str_Len(version), 41 - Str_Len(version));
+				Str_Cpy(version + Str_Len(version),
+					41 - Str_Len(version), TEXT("."));
+				Str_i32toStr(userData->WinGUIVer.minor, 1,
+					version + Str_Len(version), 41 - Str_Len(version));
+
+				GetTextExtentPoint(MemDC, version,
+					(int)(Str_Len(version)), &textExtent);
+
+				TextOut(
+					MemDC,
+					client.right - textExtent.cx - 10,
+					client.bottom - textExtent.cy - 10,
+					version,
+					(int)(Str_Len(version))
 				);
 
 				SetBkMode(MemDC, prevBKMode);
@@ -317,6 +457,10 @@ LRESULT WndProc(
 				if (userData->main != NULL) {
 					DeleteObject(userData->main);
 				}
+				if (userData->paragraph != NULL) {
+					DeleteObject(userData->paragraph);
+				}
+				UnregisterDeviceNotification(userData->hDevNot);
 				Rand_Delete(userData->random);
 				userData->random = NULL;
 				LocalFree(userData->outputText);
